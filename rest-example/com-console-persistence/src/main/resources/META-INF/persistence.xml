@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="persistanceUnit">
+		<class>com.demo.console.models.entities.AudienceParameterMaster</class>
+		<class>com.demo.console.models.entities.RunDate</class>
+		<class>com.demo.console.models.entities.TargetAudience</class>
+		<class>com.demo.console.models.entities.Campaign</class>
+		<class>com.demo.console.models.entities.DemoCampaign</class>
+	</persistence-unit>
+</persistence>

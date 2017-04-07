@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-autowire="byName"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:task="http://www.springframework.org/schema/task" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+       http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.1.xsd">
+
+	<aop:aspectj-autoproxy />
+	
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<tx:advice id="txAdvise" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+
+	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+
+	<bean id="loadTimeWeaver"
+		class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver" />
+
+	<bean id="jpaVendorAdapter"
+		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+
+	<bean id="persistenceUnitManager"
+		class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
+		<property name="defaultDataSource" ref="c3p0DataSource" />
+		<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />
+	</bean>
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="persistanceUnit" />
+		<property name="persistenceUnitManager" ref="persistenceUnitManager" />
+		<property name="loadTimeWeaver" ref="loadTimeWeaver" />
+		<property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
+		<property name="jpaDialect" ref="jpaDialect" />
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+		<qualifier value="sessionTxm"></qualifier>
+		<property name="jpaDialect" ref="jpaDialect" />
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.show_sql">${hibernate.show.sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format.sql}</prop>
+				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+				<prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch.size}</prop>
+				<prop key="hibernate.default_batch_fetch_size">${hibernate.default.fetch.size}</prop>
+				<prop key="hibernate.generate_statistics">${hibernate.generate.statistics}</prop>
+				<prop key="hibernate.default_schema">${hibernate.default.schema}</prop>
+				<prop key="hibernate.connection.defaultNChar">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="c3p0DataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close" name="c3p0DataSource">
+		<property name="driverClass" value="${db.driver.class}" />
+		<property name="jdbcUrl" value="${db.jdbc.url}" />
+		<property name="user" value="${db.user}" />
+		<property name="password" value="${db.password}" />
+		<property name="initialPoolSize" value="${db.pool.initial.size}" />
+		<property name="idleConnectionTestPeriod" value="${db.idle.connetion.test.period}" />
+		<property name="maxIdleTime" value="${db.max.idle.time}" />
+		<property name="maxPoolSize" value="${db.max.pool.size}" />
+		<property name="minPoolSize" value="${db.min.pool.size}" />
+	</bean>
+</beans>

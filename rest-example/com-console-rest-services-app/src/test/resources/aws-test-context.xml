@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+
+	<!-- AMAZON AWS -->
+	<bean id="awsCredentials" class="com.amazonaws.auth.BasicAWSCredentials"
+		c:accessKey="${aws.accesskey}" c:secretKey="${aws.secretkey} " scope="singleton" />
+
+	<bean id="snsClient" class="org.mockito.Mockito" factory-method="mock">
+		<constructor-arg value="com.amazonaws.services.sns.AmazonSNSClient" />
+	</bean>
+
+	<bean id="s3Client" class="org.mockito.Mockito" factory-method="mock">
+		<constructor-arg value="com.amazonaws.services.s3.AmazonS3Client" />
+	</bean>
+	<bean id="topicArn" class="java.lang.String">
+		<constructor-arg value="${topic.arn}" />
+	</bean>
+	<bean id="exptopicArn" class="java.lang.String">
+		<constructor-arg value="${tube.topic.expection.arn}" />
+	</bean>
+	<bean id="restBaseURL" class="java.lang.String">
+		<constructor-arg value="${host.baseurl}" />
+	</bean>
+	<bean id="snsEndpoint" class="java.lang.String">
+		<constructor-arg value="${sns.endpoint}" />
+	</bean>
+	<bean id="s3Url" class="java.lang.String">
+		<constructor-arg value="${aws.s3.url}" />
+	</bean>
+	<bean id="s3Bucket" class="java.lang.String">
+		<constructor-arg value="${aws.s3.bucket}" />
+	</bean>
+	<bean id="s3SSPOrderSummaryPrefix" class="java.lang.String">
+		<constructor-arg value="${aws.s3.ssp.order.summary.prefix}" />
+	</bean>
+	<bean id="s3SSPOrderDetailPrefix" class="java.lang.String">
+		<constructor-arg value="${aws.s3.ssp.order.detail.prefix}" />
+	</bean>
+
+</beans>

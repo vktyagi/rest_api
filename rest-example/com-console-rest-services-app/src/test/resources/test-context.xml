@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+	http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+     http://www.springframework.org/schema/cache
+     http://www.springframework.org/schema/cache/spring-cache-3.2.xsd
+	http://www.springframework.org/schema/util
+	http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<context:property-placeholder
+		location="classpath:test-application.properties"
+		ignore-unresolvable="true" />
+	<import resource="classpath:aws-test-context.xml" />
+	<import resource="classpath:test-persistence-context.xml" />
+
+	<context:component-scan base-package="com.demo.console">
+		<context:exclude-filter type="regex"
+			expression="com.demo.console.lifecycle.*" />
+		<context:exclude-filter type="regex"
+			expression="com.demo.console.wrapper.listener.*" />
+	</context:component-scan>
+	<mvc:annotation-driven />
+	<context:annotation-config />
+
+	<bean id="elasticServerUrl" class="java.lang.String">
+		<constructor-arg value="${elasticsearch.endpoint}"/>
+	</bean>
+	
+	<bean id="wso2-config" class="com.demo.console.wrapper.auth.wso2.WSO2Config">
+		<property name="authURL" value="${wso2.auth.url}" />
+		<property name="grantType" value="${wso2.auth.grant_type}" />
+		<property name="username" value="${wso2.auth.username}" />
+		<property name="password" value="${wso2.auth.password}" />
+		<property name="clientId" value="${wso2.auth.client_id}" />
+		<property name="clientSecret" value="${wso2.auth.client_secret}" />
+	</bean>
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+		p:defaultEncoding="utf-8" />
+
+	<bean id="tokenExpireTime" class="java.lang.Long" factory-method="valueOf">
+		<constructor-arg value="${token.expire.time}"
+			type="java.lang.String" />
+	</bean>
+
+	<bean id="wso2AuthService" class="org.mockito.Mockito"
+		factory-method="mock">
+		<constructor-arg
+			value="com.demo.console.wrapper.auth.wso2.WSO2AuthService" />
+	</bean>
+	
+	<bean id="audienceDataIndexingService" class="org.mockito.Mockito"
+		factory-method="mock">
+		<constructor-arg
+			value="com.demo.console.wrapper.search.service.impl.AudienceDataIndexingService" />
+	</bean>
+</beans>
